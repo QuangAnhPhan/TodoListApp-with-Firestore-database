@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import firestore from '@react-native-firebase/firestore';
 
 interface AddTodoProps {
-  newTodo: string;
-  setNewTodo: (text: string) => void;
   todosCollection: FirebaseFirestoreTypes.CollectionReference;
   loading: boolean;
   setLoading: (loading: boolean) => void;
 }
 
-const AddTodo: React.FC<AddTodoProps> = ({ newTodo, setNewTodo, todosCollection, loading, setLoading }) => {
-  console.log(`Rendering AddTodo: ${newTodo}`);
+const AddTodo: React.FC<AddTodoProps> = ({ todosCollection, loading, setLoading }) => {
+  console.log(`Rendering AddTodo`);
+  const [newTodo, setNewTodo] = useState('');
+  
   const addTodo = async () => {
     if (!newTodo.trim()) {
       Alert.alert('Error', 'Please enter a todo item');

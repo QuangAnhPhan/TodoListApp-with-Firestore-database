@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import firestore from '@react-native-firebase/firestore';
@@ -12,12 +12,12 @@ interface Headerprops {
 const Header: React.FC<Headerprops> = ({ todos, todosCollection }) => {
   console.log(`Rendering Header: ${todos.length}`);
   // Get collection statistics
-  const getStats = () => {
+  const stats = useMemo(() => {
       const total = todos.length;
       const completed = todos.filter((todo: Todo) => todo.completed).length;
       const notCompleted = total - completed;
       return { total, completed, notCompleted };
-  }
+  }, [todos]);
 
   // Batch mark all completed
   const markAllCompleted = async () => {
@@ -59,8 +59,6 @@ const Header: React.FC<Headerprops> = ({ todos, todosCollection }) => {
           console.error('Batch delete error:', error);
       }
   };
-
-  const stats = getStats();
   
   return (
       <View style={styles.header}>

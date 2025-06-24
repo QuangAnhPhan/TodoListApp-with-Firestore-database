@@ -10,10 +10,9 @@ import FilterBar from './components/FilterBar';
 const App = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(false);
-  const [newTodo, setNewTodo] = useState('');
   const [filter, setFilter] = useState<FilterType>('ALL');
   const [refreshing, setRefreshing] = useState(false);
-  const todosCollection = firestore().collection('todos');
+  const todosCollection = useMemo(() => firestore().collection('todos'), []);
   console.log('TodoApp todosCollection:', todosCollection.path);
 
   // Stabilize setFilter
@@ -24,11 +23,6 @@ const App = () => {
   // Stabilize setRefreshing
   const handleSetRefreshing = useCallback((refreshing: boolean) => {
     setRefreshing(refreshing);
-  }, []);
-
-  // Stabilize setNewTodo
-  const handleSetNewTodo = useCallback((text: string) => {
-    setNewTodo(text);
   }, []);
 
   // Stabilize setLoading
@@ -74,7 +68,7 @@ const App = () => {
   return (
     <View style={styles.container}>
       <Header todos={todos} todosCollection={todosCollection} />
-      <AddTodo newTodo={newTodo} setNewTodo={handleSetNewTodo} todosCollection={todosCollection} loading={loading} setLoading={handleSetLoading} />
+      <AddTodo todosCollection={todosCollection} loading={loading} setLoading={handleSetLoading} />
       <FilterBar filter={filter} setFilter={handleSetFilter} />
       <TodoList
         todos={todos}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { Todo, FilterType } from '../types';
@@ -42,7 +42,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos, filter, loading, refreshing,
   };
 
   // Filter todos
-  const getFilteredTodos = () => {
+  const filteredTodos = useMemo(() => {
     switch (filter) {
       case 'COMPLETED':
         return todos.filter((todo: Todo) => todo.completed);
@@ -51,13 +51,13 @@ const TodoList: React.FC<TodoListProps> = ({ todos, filter, loading, refreshing,
       default:
         return todos;
     }
-  };
+  }, [todos, filter]);
 
   // Pull to refresh
-  const onRefresh = () => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchTodos();
-  };
+  }, []);
 
   if (loading && todos.length === 0) {
     return (
@@ -70,7 +70,7 @@ const TodoList: React.FC<TodoListProps> = ({ todos, filter, loading, refreshing,
 
   return (
     <FlatList
-      data={getFilteredTodos()}
+      data={filteredTodos}
       renderItem={({ item }) => (
         <TodoItem item={item} todosCollection={todosCollection} />
       )}
